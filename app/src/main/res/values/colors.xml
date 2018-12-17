@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="OurDark">#1c1921</color>
+    <color name="OurLightOrange">#e67e22</color>
+    <color name="OurDarkOrange">#d35400</color>
+    <color name="OurDarkFields">#2a2631</color>
+    <color name="LightBackgroundColor">#e6e5e5</color>
+
+    <color name="logocolor">#32bbc1</color>
+    <color name="backgrounddark">#3c3f48</color>
+    <color name="white">#fff</color>
+    <color name="light_blue_700">#32bbc1</color>
+    <color name="grey_700">#444</color>
+    <color name="green_700">#1A2</color>
+    <color name="blue_700">#17B</color>
+    <color name="red_700">#B23</color>
+</resources>
