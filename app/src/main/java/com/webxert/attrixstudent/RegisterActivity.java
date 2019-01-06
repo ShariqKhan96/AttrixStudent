@@ -10,24 +10,40 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.webxert.attrixstudent.common.FirebaseHelper;
+import com.webxert.attrixstudent.model.SignInUpModel;
+
 import java.io.IOException;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements FirebaseHelper.RegisterCallBack {
 
-    private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final String TAG = RegisterActivity.class.getSimpleName();
     LinearLayout image_picker_view;
     int image_count = 0;
+    FirebaseHelper firebaseHelper;
     Bitmap[] bitmaps = new Bitmap[3];
     LinearLayout auth_view;
-
+    EditText name, mobile, pass, section, program, batchNo, seatNo, shift;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.register);
+
+        name = findViewById(R.id.name);
+        mobile = findViewById(R.id.mobile);
+        pass = findViewById(R.id.pass);
+        seatNo = findViewById(R.id.seat_no);
+        section = findViewById(R.id.section);
+        shift = findViewById(R.id.shift);
+        program = findViewById(R.id.program);
+        batchNo = findViewById(R.id.batch_no);
+
+
         image_picker_view = findViewById(R.id.image_picker_view);
         auth_view = findViewById(R.id.auth_view);
         auth_view.setVisibility(View.GONE);
@@ -45,7 +61,10 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.login_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, Home.class));
+
+                firebaseHelper = new FirebaseHelper(RegisterActivity.this);
+                firebaseHelper.setRegisterCallBack(RegisterActivity.this);
+                firebaseHelper.registerStudent(getRegisterModel());
             }
         });
 
@@ -117,5 +136,28 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private SignInUpModel getRegisterModel() {
+        SignInUpModel model = new SignInUpModel();
+
+        model.setBatchNo(batchNo.getText().toString().trim());
+        model.setName(name.getText().toString().trim());
+        model.setPass(pass.getText().toString().trim());
+        model.setMobile(mobile.getText().toString().trim());
+        model.setSeatNo(seatNo.getText().toString().trim());
+        model.setSection(section.getText().toString().trim());
+        model.setProgram(program.getText().toString().trim());
+        model.setShift(shift.getText().toString().trim());
+
+        return model;
+    }
+
+    @Override
+    public void onRegister(boolean success) {
+        if (success)
+            startActivity(new Intent(RegisterActivity.this, Home.class));
+        else
+            Toast.makeText(RegisterActivity.this, "User already present", Toast.LENGTH_SHORT).show();
     }
 }

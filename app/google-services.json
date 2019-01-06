@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "295577573646",
+    "firebase_url": "https://attrixstudent.firebaseio.com",
+    "project_id": "attrixstudent",
+    "storage_bucket": "attrixstudent.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295577573646:android:54d621b482511819",
+        "android_client_info": {
+          "package_name": "com.webxert.attrixstudent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295577573646-fu4iqk1729uetv8turr98bdq416q6bl7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.webxert.attrixstudent",
+            "certificate_hash": "03a37b85703b58c34ebb8745b522e4f17695167d"
+          }
+        },
+        {
+          "client_id": "295577573646-2an6tticpk54744cj22g8g6jjc157jhv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD8N1jiuwAO-vHBkEbfuP1lIHAcmpClYc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295577573646-2an6tticpk54744cj22g8g6jjc157jhv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

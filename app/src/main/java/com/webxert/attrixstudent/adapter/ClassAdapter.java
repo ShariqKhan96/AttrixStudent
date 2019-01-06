@@ -3,6 +3,7 @@ package com.webxert.attrixstudent.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.webxert.attrixstudent.R;
+import com.webxert.attrixstudent.StatsActivity;
 import com.webxert.attrixstudent.common.Common;
 
 /**
@@ -49,8 +51,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
         holder.show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //STATISTICS DIKHANI HAI CURRENT ATTENDACE KI
-
+                context.startActivity(new Intent(context,StatsActivity.class));
             }
         });
         holder.lock.setOnClickListener(new View.OnClickListener() {
