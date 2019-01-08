@@ -1,5 +1,7 @@
 package com.webxert.attrixstudent.model;
 
+import java.util.List;
+
 public class SignInUpModel {
     private String seatNo;
     private String pass;
@@ -10,6 +12,15 @@ public class SignInUpModel {
     private String faceId;
     private String name;
     private String email;
+    private List<String> imgUrls;
+
+    public List<String> getImgUrls() {
+        return imgUrls;
+    }
+
+    public void setImgUrls(List<String> imgUrls) {
+        this.imgUrls = imgUrls;
+    }
 
     public String getSeatNo() {
         return seatNo;

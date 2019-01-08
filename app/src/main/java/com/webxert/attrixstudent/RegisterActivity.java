@@ -18,14 +18,17 @@ import com.webxert.attrixstudent.common.FirebaseHelper;
 import com.webxert.attrixstudent.model.SignInUpModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class RegisterActivity extends AppCompatActivity implements FirebaseHelper.RegisterCallBack {
+public class RegisterActivity extends AppCompatActivity implements FirebaseHelper.RegisterCallBack,FirebaseHelper.StoreImageCallBack {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
     LinearLayout image_picker_view;
     int image_count = 0;
     FirebaseHelper firebaseHelper;
     Bitmap[] bitmaps = new Bitmap[3];
+    List<String> downloadUris = new ArrayList<>();
     LinearLayout auth_view;
     EditText name, mobile, pass, section, program, batchNo, seatNo, shift;
 
@@ -33,6 +36,9 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+
+        firebaseHelper = new FirebaseHelper(RegisterActivity.this);
+
 
         name = findViewById(R.id.name);
         mobile = findViewById(R.id.mobile);
@@ -62,7 +68,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
             @Override
             public void onClick(View v) {
 
-                firebaseHelper = new FirebaseHelper(RegisterActivity.this);
                 firebaseHelper.setRegisterCallBack(RegisterActivity.this);
                 firebaseHelper.registerStudent(getRegisterModel());
             }
@@ -105,10 +110,12 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
                         Uri uri = item.getUri();
 
+                        firebaseHelper.setStoreImageCallBack(RegisterActivity.this);
+                        firebaseHelper.uploadImage(uri);
+
                         Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
                         cursor.moveToFirst();
 
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         try {
                             //Log.e("imageUri", cursor.getString(columnIndex));
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
@@ -126,13 +133,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                 }
             }
 
-
-            //images_count_tv.setText(String.format("%s images are picked!", data.getClipData().getItemCount() + " "));
-
-
-            /// / ArrayList<Uri> arrayList = new ArrayList<>();
-
-
         }
 
 
@@ -149,6 +149,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         model.setSection(section.getText().toString().trim());
         model.setProgram(program.getText().toString().trim());
         model.setShift(shift.getText().toString().trim());
+        model.setImgUrls(downloadUris);
 
         return model;
     }
@@ -159,5 +160,11 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
             startActivity(new Intent(RegisterActivity.this, Home.class));
         else
             Toast.makeText(RegisterActivity.this, "User already present", Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void onSuccess(Uri uri) {
+        downloadUris.add(uri.toString());
     }
 }
