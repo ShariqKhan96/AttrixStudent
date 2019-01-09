@@ -1,6 +1,7 @@
 package com.webxert.attrixstudent.adapter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
@@ -51,6 +52,20 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             public void onClick(View v) {
                 //STATISTICS DIKHANI HAI CURRENT ATTENDACE KI
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                View view = LayoutInflater.from(context).inflate(R.layout.class_view, null, false);
+                builder.setView(R.layout.classview);
+//
+//                builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+
+                builder.show();
+
+
             }
         });
         holder.lock.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +84,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                             holder.show.setVisibility(View.VISIBLE);
                             holder.lock.setVisibility(View.GONE);
                             Common.getArrayList().get(holder.getAdapterPosition()).setRegister(true);
+
+
                         } else {
                             holder.show.setVisibility(View.GONE);
                             holder.lock.setVisibility(View.VISIBLE);
@@ -107,7 +124,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             course_name = itemView.findViewById(R.id.course_name);
             lock = itemView.findViewById(R.id.lock_unlock);
             show = itemView.findViewById(R.id.watch);
-
 
 
         }
