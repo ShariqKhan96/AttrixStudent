@@ -1,43 +1,35 @@
 package com.webxert.attrixstudent;
 
-import android.view.View;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.os.AsyncTask;
-import android.os.Handler;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.webxert.attrixstudent.common.FirebaseHelper;
-import com.webxert.attrixstudent.model.SignInUpModel;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
 import com.microsoft.projectoxford.face.contract.AddPersistedFaceResult;
 import com.microsoft.projectoxford.face.contract.CreatePersonResult;
 import com.microsoft.projectoxford.face.contract.PersonGroup;
 import com.microsoft.projectoxford.face.contract.TrainingStatus;
+import com.webxert.attrixstudent.common.FirebaseHelper;
+import com.webxert.attrixstudent.model.SignInUpModel;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 public class RegisterActivity extends AppCompatActivity implements FirebaseHelper.RegisterCallBack,FirebaseHelper.StoreImageCallBack {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
@@ -48,7 +40,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     List<String> downloadUris = new ArrayList<>();
     LinearLayout auth_view;
     EditText name, mobile, pass, section, program,year, batchNo, seatNo, shift;
-    Cursor cursor;
     Uri uri;
     String UNIQUE_ID;
     PersonGroup group;
@@ -56,8 +47,8 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     ProgressDialog dialog;
     ByteArrayInputStream byteArrayInputStream;
     private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "073d465bfb0e4a11afafc6f13d4133be");
-    EditText name, email, batchno, seatno, shift, section, program;
-    AppCompatButton register;
+    String seatNumber, studentName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,22 +90,14 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
                 firebaseHelper.setRegisterCallBack(RegisterActivity.this);
                 firebaseHelper.registerStudent(getRegisterModel());
+                
+                seatNumber = seatNo.getText().toString();
+                studentName = name.getText().toString();
 //                registerUserFace();
             }
         });
 
 
-    }
-
-    private void initUI() {
-        name = findViewById(R.id.name);
-        email = findViewById(R.id.email);
-        batchno = findViewById(R.id.batch_no);
-        seatno = findViewById(R.id.seat_no);
-        shift = findViewById(R.id.shift);
-        section = findViewById(R.id.section);
-        register = findViewById(R.id.login_btn);
-        program = findViewById(R.id.program);
     }
 
 
@@ -169,12 +152,13 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
                         } catch (IOException e) {
 
-                                    Log.e(TAG, e.getMessage());
+                            Log.e(TAG, e.getMessage());
                         }
 
+                    }
                 }
-            }
 
+            }
         }
     }
 
@@ -219,14 +203,16 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     }
 
     private class CreatePersonTask extends AsyncTask<Void, String, CreatePersonResult> {
-
+        
+//        String batchNo,shift,section,seatNo,name;
         @Override
         protected CreatePersonResult doInBackground(Void... voids) {
             try {
                 publishProgress("Creating person in group");
                 //dialog.dismiss();
-                UNIQUE_ID = batchno.getText().toString() + shift.getText().toString().substring(1, 3) + section.getText().toString();
-                return faceServiceRestClient.createPerson(UNIQUE_ID, seatno.getText().toString() + " " + name.getText().toString(), null);
+                UNIQUE_ID = AppGenericClass.getInstance(RegisterActivity.this).getPrefs(AppGenericClass.CLASS_ID);
+                return faceServiceRestClient.createPerson(UNIQUE_ID,  
+                        seatNumber + " " + studentName, null);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -246,6 +232,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
             //person id bhi faceid ki tarhan treat hosakti hai might be possible
 
+            //this is the face id which is to be pushed on firebase.
             Log.e("personId", String.valueOf(createPersonResult.personId));
             if (createPersonResult != null) {
 
@@ -255,8 +242,15 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
-            publishProgress(values[0]);
+        protected void onProgressUpdate(final String... values) {
+            
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    publishProgress(values[0]);   
+                }
+            });
+        
         }
     }
 
@@ -356,12 +350,12 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         protected void onPostExecute(Boolean trainingBool) {
             dialog.dismiss();
             if (trainingBool) {
-                Intent intent = new Intent(LoginActivity.this, Home.class);
+                Intent intent = new Intent(RegisterActivity.this, Home.class);
                 startActivity(intent);
 
                 //Registration Successful intent to main activity else try to train again
             } else {
-                Toast.makeText(LoginActivity.this, "Unable to train!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Unable to train!", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -421,7 +415,8 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         protected Boolean doInBackground(Void... voids) {
             try {
                 //updating old group. If you want to create a new group change to createPerson Group....
-                faceServiceRestClient.createPersonGroup(UNIQUE_ID, program.getText().toString() + batchno.getText().toString() + shift.getText().toString().substring(1, 3), null);
+                UNIQUE_ID = AppGenericClass.getInstance(RegisterActivity.this).getPrefs(AppGenericClass.CLASS_ID);
+                faceServiceRestClient.createPersonGroup(UNIQUE_ID, UNIQUE_ID, null);
             } catch (Exception e) {
                 Log.e("Client/IO Exception", e.getMessage());
                 publishProgress("Exception caught");

@@ -49,7 +49,6 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
             }
         }
 
-//        viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),Home.this,cms));
         tabLayout.setupWithViewPager(viewPager);
     }

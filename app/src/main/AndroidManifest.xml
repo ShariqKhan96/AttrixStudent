@@ -12,7 +12,6 @@
         <activity android:name=".MainActivity">
 
         </activity>
-        <activity android:name=".LoginActivity" />
         <activity android:name=".Home" />
         <activity android:name=".Splash">
             <intent-filter>
@@ -22,7 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".Home"></activity>
         <activity android:name=".StatsActivity"></activity>
 
         <activity android:name=".Login"></activity>

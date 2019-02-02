@@ -126,7 +126,7 @@
         android:layout_height="250dp"
         android:background="@drawable/ic_camera_alt_black_24dp"
         android:orientation="vertical"
-        android:visibility="visible" />
+        android:visibility="visible">
 
-
+    </LinearLayout>
 </FrameLayout>
