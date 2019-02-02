@@ -1,6 +1,7 @@
 package com.webxert.attrixstudent.adapter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,7 +55,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             holder.lock.setVisibility(View.VISIBLE);
             holder.show.setVisibility(View.GONE);
         }
-
 
     }
 
@@ -121,7 +121,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                     builder.show();
                 }
             });
-
         }
     }
 }
