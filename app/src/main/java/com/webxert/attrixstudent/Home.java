@@ -1,22 +1,56 @@
 package com.webxert.attrixstudent;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
-import com.webxert.attrixstudent.adapter.ClassAdapter;
+import com.webxert.attrixstudent.adapter.ViewPagerAdapter;
+import com.webxert.attrixstudent.common.FirebaseHelper;
+import com.webxert.attrixstudent.model.ClassModel;
 
-public class Home extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
-    RecyclerView recyclerView;
+public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCallback {
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    List<ClassModel> cms = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        recyclerView = findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new ClassAdapter(this));
+        setContentView(R.layout.activity_home_new);
+
+        tabLayout = findViewById(R.id.tabs);
+
+        FirebaseHelper fb = new FirebaseHelper(Home.this);
+        fb.setGetClassCallback(this);
+        fb.getClasses();
+
+        viewPager = findViewById(R.id.pager);
+
+    }
+
+    @Override
+    public void onSuccess(List<ClassModel> list) {
+        cms = list;
+
+        for(ClassModel cm:cms){
+            if(cm.getEnrolledStudents() != null)
+            {
+                if(cm.getEnrolledStudents().contains(AppGenericClass.getInstance(Home.this).
+                        getPrefs(AppGenericClass.TOKEN)))
+                    cm.setRegister(true);
+                else
+                    cm.setRegister(false);
+
+            }
+        }
+
+//        viewPager.getAdapter().notifyDataSetChanged();
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),Home.this,cms));
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

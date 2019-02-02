@@ -20,7 +20,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.webxert.attrixstudent.model.ClassModel;
 import com.webxert.attrixstudent.model.SignInUpModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 
@@ -38,20 +42,23 @@ public class FirebaseHelper {
 
     StoreImageCallBack storeImageCallBack;
     RegisterCallBack registerCallBack;
+    GetClassCallback getClassCallback;
 
+    public interface GetClassCallback {
+        void onSuccess(List<ClassModel> list);
+    }
 
-    public interface StoreImageCallBack{
+    public interface StoreImageCallBack {
         void onSuccess(Uri uri);
     }
 
     public interface SignInCallBack {
-        void onSignIn(int code);
+        void onSignIn(int code, String id,String class_id);
     }
 
     public interface RegisterCallBack {
-        void onRegister(boolean success);
+        void onRegister(boolean success, String id);
     }
-
 
 
     public void setSignInCallBack(SignInCallBack signInCallBack) {
@@ -62,15 +69,20 @@ public class FirebaseHelper {
         this.registerCallBack = registerCallBack;
     }
 
+
+    public void setGetClassCallback(GetClassCallback getClassCallback) {
+        this.getClassCallback = getClassCallback;
+    }
+
     public FirebaseHelper(Context context) {
         this.dbRef = FirebaseDatabase.getInstance().getReference();
         this.context = context;
     }
 
 
-    public void uploadImage(final Uri image){
+    public void uploadImage(final Uri image) {
         storageRef = FirebaseStorage.getInstance().getReference();
-        final StorageReference ref = storageRef.child("Student Images"+ image.getLastPathSegment());
+        final StorageReference ref = storageRef.child("Student Images" + image.getLastPathSegment());
         final AlertDialog dialog = new SpotsDialog.Builder().setContext(context).build();
         dialog.setMessage("Uploading File. Please wait...");
         dialog.show();
@@ -84,7 +96,7 @@ public class FirebaseHelper {
             @Override
             public void onFailure(@NonNull Exception e) {
                 dialog.dismiss();
-                Log.d("Exception",e.toString());
+                Log.d("Exception", e.toString());
             }
         }).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
@@ -103,11 +115,12 @@ public class FirebaseHelper {
                     Uri downloadUri = task.getResult();
                     storeImageCallBack.onSuccess(downloadUri);
                 } else {
-                    Log.d("Failed Download","something went wrong");
+                    Log.d("Failed Download", "something went wrong");
                 }
             }
         });
     }
+
     public void uploadImageOfStudent(final Uri image) {
         storageRef = FirebaseStorage.getInstance().getReference().child("Student Images");
         final AlertDialog dialog = new SpotsDialog.Builder().setContext(context).build();
@@ -133,7 +146,7 @@ public class FirebaseHelper {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         dialog1.dismiss();
-                        Log.d("Exception",e.toString());
+                        Log.d("Exception", e.toString());
                     }
                 });
             }
@@ -172,10 +185,12 @@ public class FirebaseHelper {
                 }
 
                 if (!exists) {
-                    dbRef.child("Student").push().setValue(signInUpModel);
-                    registerCallBack.onRegister(true);
+                    String key = dbRef.child("Student").push().getKey();
+                    signInUpModel.setId(key);
+                    dbRef.child("Student").child(key).setValue(signInUpModel);
+                    registerCallBack.onRegister(true, key);
                 } else
-                    registerCallBack.onRegister(false);
+                    registerCallBack.onRegister(false, null);
 
             }
 
@@ -185,6 +200,52 @@ public class FirebaseHelper {
                 Log.d("dbError", databaseError.getMessage());
             }
         });
+    }
+
+
+    public void getClasses() {
+
+        final AlertDialog dialog = new SpotsDialog.Builder().setContext(context).build();
+        dialog.setMessage("Loading Classes. Please wait...");
+        dialog.show();
+
+        dbRef.child("Class").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                List<ClassModel> cms = new ArrayList<>();
+                //get all classes
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ClassModel model = snapshot.getValue(ClassModel.class);
+                    model.setClassKey(snapshot.getKey());
+
+                    cms.add(model);
+                }
+
+                getClassCallback.onSuccess(cms);
+                try {
+                    dialog.dismiss();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                dialog.dismiss();
+                Log.d("dbError", databaseError.getMessage());
+            }
+        });
+    }
+
+    public void addStudentInClass(String classKey, String studentKey, List<String> students) {
+        if (students != null)
+            students.add(studentKey);
+        else {
+            students = new ArrayList<>();
+            students.add(studentKey);
+        }
+        dbRef.child("Class").child(classKey).child("enrolledStudents").setValue(students);
     }
 
     public void signInStudent(final String mobileNo, final String pass) {
@@ -207,15 +268,15 @@ public class FirebaseHelper {
                     passMatch = pass.equals(model.getPass());
 
                     if (mobileMatch && passMatch) {
-                        signInCallBack.onSignIn(200);
+                        signInCallBack.onSignIn(200, model.getId(),model.getYear());
                         return;
                     } else if (mobileMatch && !passMatch) {
-                        signInCallBack.onSignIn(201);
+                        signInCallBack.onSignIn(201, null,null);
                         return;
                     }
                 }
 
-                signInCallBack.onSignIn(202);
+                signInCallBack.onSignIn(202, null,null);
             }
 
             @Override

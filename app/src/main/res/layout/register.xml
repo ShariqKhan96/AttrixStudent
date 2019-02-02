@@ -98,6 +98,14 @@
                 android:hint="Program" />
 
 
+            <EditText
+                android:id="@+id/year"
+                style="@style/darkroundedet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Studying Year" />
+
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/login_btn"
                 style="@style/roundedbutton"

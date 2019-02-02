@@ -1,15 +1,15 @@
 package com.webxert.attrixstudent;
 
+import android.view.View;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -30,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     Bitmap[] bitmaps = new Bitmap[3];
     List<String> downloadUris = new ArrayList<>();
     LinearLayout auth_view;
-    EditText name, mobile, pass, section, program, batchNo, seatNo, shift;
+    EditText name, mobile, pass, section, program,year, batchNo, seatNo, shift;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         shift = findViewById(R.id.shift);
         program = findViewById(R.id.program);
         batchNo = findViewById(R.id.batch_no);
+        year = findViewById(R.id.year);
 
 
         image_picker_view = findViewById(R.id.image_picker_view);
@@ -134,8 +135,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
             }
 
         }
-
-
     }
 
     private SignInUpModel getRegisterModel() {
@@ -149,15 +148,21 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         model.setSection(section.getText().toString().trim());
         model.setProgram(program.getText().toString().trim());
         model.setShift(shift.getText().toString().trim());
+        model.setYear(year.getText().toString() + "-"+ AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear());
         model.setImgUrls(downloadUris);
 
         return model;
     }
 
     @Override
-    public void onRegister(boolean success) {
-        if (success)
+    public void onRegister(boolean success,String id) {
+        if (success) {
+            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.CLASS_ID,
+                    year.getText().toString() + "-"+ AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear());
+
+            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.TOKEN,id);
             startActivity(new Intent(RegisterActivity.this, Home.class));
+        }
         else
             Toast.makeText(RegisterActivity.this, "User already present", Toast.LENGTH_SHORT).show();
     }

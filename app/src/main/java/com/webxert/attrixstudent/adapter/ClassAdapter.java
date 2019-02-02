@@ -13,9 +13,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.webxert.attrixstudent.AppGenericClass;
 import com.webxert.attrixstudent.R;
 import com.webxert.attrixstudent.StatsActivity;
-import com.webxert.attrixstudent.common.Common;
+import com.webxert.attrixstudent.common.FirebaseHelper;
+import com.webxert.attrixstudent.model.ClassModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hp on 12/17/2018.
@@ -25,9 +30,11 @@ import com.webxert.attrixstudent.common.Common;
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
 
     Context context;
+    List<ClassModel> cms = new ArrayList<>();
 
-    public ClassAdapter(Context context) {
+    public ClassAdapter(Context context,List<ClassModel> cms) {
         this.context = context;
+        this.cms = cms;
     }
 
     @NonNull
@@ -39,8 +46,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
     @Override
     public void onBindViewHolder(@NonNull final MyVH holder, int position) {
 
-        holder.course_name.setText(Common.getArrayList().get(holder.getAdapterPosition()).getCourse_name());
-        if (Common.getArrayList().get(holder.getAdapterPosition()).isRegister()) {
+        holder.course_name.setText(cms.get(holder.getAdapterPosition()).getTitle());
+        if (cms.get(holder.getAdapterPosition()).isRegister()) {
             holder.lock.setVisibility(View.GONE);
             holder.show.setVisibility(View.VISIBLE);
         } else {
@@ -48,53 +55,12 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             holder.show.setVisibility(View.GONE);
         }
 
-        holder.show.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context,StatsActivity.class));
-            }
-        });
-        holder.lock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Verificaiton");
-                builder.setMessage("Enter your verification code");
-                final EditText editText = new EditText(context);
-                builder.setView(editText);
-
-                builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (editText.getText().toString().equals(Common.getArrayList().get(holder.getAdapterPosition()).getCourse_name())) {
-                            holder.show.setVisibility(View.VISIBLE);
-                            holder.lock.setVisibility(View.GONE);
-                            Common.getArrayList().get(holder.getAdapterPosition()).setRegister(true);
-                        } else {
-                            holder.show.setVisibility(View.GONE);
-                            holder.lock.setVisibility(View.VISIBLE);
-                        }
-
-                        dialog.dismiss();
-                    }
-                });
-
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                builder.show();
-            }
-        });
 
     }
 
     @Override
     public int getItemCount() {
-        return Common.getArrayList().size();
+        return cms.size();
     }
 
     public class MyVH extends RecyclerView.ViewHolder {
@@ -109,7 +75,52 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             lock = itemView.findViewById(R.id.lock_unlock);
             show = itemView.findViewById(R.id.watch);
 
+            show.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context,StatsActivity.class));
+                }
+            });
 
+            lock.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Verificaiton");
+                    builder.setMessage("Enter your verification code");
+                    final EditText editText = new EditText(context);
+                    builder.setView(editText);
+
+                    builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (editText.getText().toString().equals(cms.get(getAdapterPosition()).getClassCode())) {
+                                show.setVisibility(View.VISIBLE);
+                                lock.setVisibility(View.GONE);
+                                cms.get(getAdapterPosition()).setRegister(true);
+                                new FirebaseHelper(context).addStudentInClass(
+                                        cms.get(getAdapterPosition()).getClassKey(),
+                                        AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN),
+                                        cms.get(getAdapterPosition()).getEnrolledStudents());
+                            } else {
+                                show.setVisibility(View.GONE);
+                                lock.setVisibility(View.VISIBLE);
+                            }
+                            notifyDataSetChanged();
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.show();
+                }
+            });
 
         }
     }
