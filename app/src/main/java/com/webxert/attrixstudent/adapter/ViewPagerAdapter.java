@@ -23,7 +23,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private List<ClassModel> classes;
 
-    public ViewPagerAdapter(FragmentManager fm,Context context, List<ClassModel> classes){
+    public ViewPagerAdapter(FragmentManager fm, Context context, List<ClassModel> classes) {
         super(fm);
         this.context = context;
         this.classes = classes;
@@ -32,7 +32,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 return "1st Year";
             case 1:
@@ -46,9 +46,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return null;
     }
 
-    private String getClassIdByPos(int pos){
+    private String getClassIdByPos(int pos) {
         String year = AppGenericClass.getInstance(context).getCurrentYear();
-        switch (pos){
+        switch (pos) {
             case 0:
                 return "1st-" + year;
             case 1:
@@ -63,10 +63,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     }
 
 
-    private List<ClassModel> getFilteredClasses(String filter){
+    private List<ClassModel> getFilteredClasses(String filter) {
         List<ClassModel> filteredClass = new ArrayList<>();
-        for(ClassModel model : classes){
-            if(model.getClassId().equals(filter)){
+        for (ClassModel model : classes) {
+            if (model.getClassId().equals(filter)) {
                 filteredClass.add(model);
             }
         }
@@ -80,28 +80,24 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Bundle b = new Bundle();
-        b.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) getFilteredClasses(getClassIdByPos(position)));
-        switch (position){
+
+
+        switch (position) {
             case 0:
-                FirstYearFragment firstYearFragment = new FirstYearFragment();
-                firstYearFragment.setArguments(b);
-                return firstYearFragment;
+                FirstYearFragment.list.addAll(getFilteredClasses("1"));
+                return FirstYearFragment.getInstance();
             case 1:
-                SecondYearFragment secondYearFragment= new SecondYearFragment();
-                secondYearFragment.setArguments(b);
-                return secondYearFragment;
+                SecondYearFragment.list.addAll(getFilteredClasses("2"));
+                return SecondYearFragment.getInstance();
             case 2:
-                ThirdYearFragment thirdYearFragment= new ThirdYearFragment();
-                thirdYearFragment.setArguments(b);
-                return thirdYearFragment;
+                ThirdYearFragment.list.addAll(getFilteredClasses("3"));
+                return ThirdYearFragment.getInstance();
             case 3:
-                FourthYearFragment fourthYearFragment= new FourthYearFragment();
-                fourthYearFragment.setArguments(b);
-                return fourthYearFragment;
+                FourthYearFragment.list.addAll(getFilteredClasses("4"));
+                return FourthYearFragment.getInstance();
 
         }
 
-        return null;
+        return FirstYearFragment.getInstance();
     }
 }

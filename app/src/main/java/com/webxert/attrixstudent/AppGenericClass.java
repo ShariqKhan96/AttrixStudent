@@ -14,6 +14,8 @@ public class AppGenericClass {
     public static final String PREFS = "AttrixPrefs";
     public static final String TOKEN= "TOKEN";
     public static final String CLASS_ID = "CLASS_ID";
+    public static final String LOGGED_IN = "LOGGED_IN";
+
 
     Context context;
     private AppGenericClass(Context context){
@@ -44,11 +46,15 @@ public class AppGenericClass {
     }
 
     public void setPrefs(String key,String value){
-        context.getSharedPreferences(PREFS,Context.MODE_PRIVATE).edit().putString(key,value).commit();
+        context.getSharedPreferences(PREFS,Context.MODE_PRIVATE).edit().putString(key,value).apply();
     }
 
     public String getPrefs(String key){
         return context.getSharedPreferences(PREFS,Context.MODE_PRIVATE).getString(key,"");
+    }
+     void clearPrefs()
+    {
+        context.getSharedPreferences(PREFS,Context.MODE_PRIVATE).edit().clear().apply();
     }
 
     public String getCurrentYear(){

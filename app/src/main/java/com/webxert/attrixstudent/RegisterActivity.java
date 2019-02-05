@@ -30,7 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-public class RegisterActivity extends AppCompatActivity implements FirebaseHelper.RegisterCallBack,FirebaseHelper.StoreImageCallBack {
+
+public class RegisterActivity extends AppCompatActivity implements FirebaseHelper.RegisterCallBack, FirebaseHelper.StoreImageCallBack {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
     LinearLayout image_picker_view;
@@ -39,21 +40,25 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     Bitmap[] bitmaps = new Bitmap[3];
     List<String> downloadUris = new ArrayList<>();
     LinearLayout auth_view;
-    EditText name, mobile, pass, section, program,year, batchNo, seatNo, shift;
+    EditText name, mobile, pass, section, program, year, batchNo, seatNo, shift;
     Uri uri;
     String UNIQUE_ID;
     PersonGroup group;
     int i;
     ProgressDialog dialog;
     ByteArrayInputStream byteArrayInputStream;
-    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "073d465bfb0e4a11afafc6f13d4133be");
+    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "690152a3eb9a46879c53e5430cbb5ec7");
     String seatNumber, studentName;
+    public static String FaceID = "";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Registering");
+        dialog.setMessage("Please Wait..");
 
         firebaseHelper = new FirebaseHelper(RegisterActivity.this);
 
@@ -67,7 +72,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         program = findViewById(R.id.program);
         batchNo = findViewById(R.id.batch_no);
         year = findViewById(R.id.year);
-        setContentView(R.layout.login);
 
         image_picker_view = findViewById(R.id.image_picker_view);
         auth_view = findViewById(R.id.auth_view);
@@ -87,19 +91,14 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         findViewById(R.id.login_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                registerUserFace();
 
-                firebaseHelper.setRegisterCallBack(RegisterActivity.this);
-                firebaseHelper.registerStudent(getRegisterModel());
-                
                 seatNumber = seatNo.getText().toString();
                 studentName = name.getText().toString();
-//                registerUserFace();
+
             }
         });
-
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -134,9 +133,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
                         uri = item.getUri();
 
-                        firebaseHelper.setStoreImageCallBack(RegisterActivity.this);
-                        firebaseHelper.uploadImage(uri);
-
                         Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
                         cursor.moveToFirst();
 
@@ -145,10 +141,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                             bitmaps[i] = bitmap;
                             cursor.close();
-//                       cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-//                        cursor.moveToFirst();
 
-//                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 
                         } catch (IOException e) {
 
@@ -173,22 +166,23 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         model.setSection(section.getText().toString().trim());
         model.setProgram(program.getText().toString().trim());
         model.setShift(shift.getText().toString().trim());
-        model.setYear(year.getText().toString() + "-"+ AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear());
-        model.setImgUrls(downloadUris);
+        model.setYear(year.getText().toString() + "-" + AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear());
+        model.setFaceId(FaceID);
+
 
         return model;
     }
 
     @Override
-    public void onRegister(boolean success,String id) {
+    public void onRegister(boolean success, String id) {
         if (success) {
             AppGenericClass.getInstance(this).setPrefs(AppGenericClass.CLASS_ID,
-                    year.getText().toString() + "-"+ AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear());
+                    year.getText().toString() + "-" + AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear());
 
-            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.TOKEN,id);
+            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.TOKEN, id);
+
             startActivity(new Intent(RegisterActivity.this, Home.class));
-        }
-        else
+        } else
             Toast.makeText(RegisterActivity.this, "User already present", Toast.LENGTH_SHORT).show();
     }
 
@@ -203,15 +197,15 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     }
 
     private class CreatePersonTask extends AsyncTask<Void, String, CreatePersonResult> {
-        
-//        String batchNo,shift,section,seatNo,name;
+
+        //        String batchNo,shift,section,seatNo,name;
         @Override
         protected CreatePersonResult doInBackground(Void... voids) {
             try {
                 publishProgress("Creating person in group");
                 //dialog.dismiss();
-                UNIQUE_ID = AppGenericClass.getInstance(RegisterActivity.this).getPrefs(AppGenericClass.CLASS_ID);
-                return faceServiceRestClient.createPerson(UNIQUE_ID,  
+                UNIQUE_ID = year.getText().toString() + "-" + AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear();
+                return faceServiceRestClient.createPerson(UNIQUE_ID,
                         seatNumber + " " + studentName, null);
 
             } catch (Exception e) {
@@ -233,6 +227,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
             //person id bhi faceid ki tarhan treat hosakti hai might be possible
 
             //this is the face id which is to be pushed on firebase.
+            FaceID = createPersonResult.personId.toString().trim();
             Log.e("personId", String.valueOf(createPersonResult.personId));
             if (createPersonResult != null) {
 
@@ -243,14 +238,14 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
         @Override
         protected void onProgressUpdate(final String... values) {
-            
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    publishProgress(values[0]);   
+                    publishProgress(values[0]);
                 }
             });
-        
+
         }
     }
 
@@ -350,8 +345,10 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         protected void onPostExecute(Boolean trainingBool) {
             dialog.dismiss();
             if (trainingBool) {
-                Intent intent = new Intent(RegisterActivity.this, Home.class);
-                startActivity(intent);
+                firebaseHelper.setRegisterCallBack(RegisterActivity.this);
+                firebaseHelper.registerStudent(getRegisterModel());
+//                Intent intent = new Intent(RegisterActivity.this, Home.class);
+//                startActivity(intent);
 
                 //Registration Successful intent to main activity else try to train again
             } else {
@@ -415,8 +412,8 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         protected Boolean doInBackground(Void... voids) {
             try {
                 //updating old group. If you want to create a new group change to createPerson Group....
-                UNIQUE_ID = AppGenericClass.getInstance(RegisterActivity.this).getPrefs(AppGenericClass.CLASS_ID);
-                faceServiceRestClient.createPersonGroup(UNIQUE_ID, UNIQUE_ID, null);
+                UNIQUE_ID = year.getText().toString() + "-" + AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear();
+                faceServiceRestClient.createPersonGroup(UNIQUE_ID, "UBIT Students", null);
             } catch (Exception e) {
                 Log.e("Client/IO Exception", e.getMessage());
                 publishProgress("Exception caught");

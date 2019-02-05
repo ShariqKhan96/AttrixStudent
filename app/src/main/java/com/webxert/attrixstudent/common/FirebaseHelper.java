@@ -186,11 +186,12 @@ public class FirebaseHelper {
 
                 if (!exists) {
                     String key = dbRef.child("Student").push().getKey();
-                    signInUpModel.setId(key);
                     dbRef.child("Student").child(key).setValue(signInUpModel);
                     registerCallBack.onRegister(true, key);
                 } else
                     registerCallBack.onRegister(false, null);
+
+
 
             }
 
@@ -209,7 +210,7 @@ public class FirebaseHelper {
         dialog.setMessage("Loading Classes. Please wait...");
         dialog.show();
 
-        dbRef.child("Class").addValueEventListener(new ValueEventListener() {
+        dbRef.child("classes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -244,8 +245,10 @@ public class FirebaseHelper {
         else {
             students = new ArrayList<>();
             students.add(studentKey);
+
         }
-        dbRef.child("Class").child(classKey).child("enrolledStudents").setValue(students);
+
+        dbRef.child("classes").child(classKey).child("enrolledStudents").setValue(students);
     }
 
     public void signInStudent(final String mobileNo, final String pass) {
@@ -268,7 +271,7 @@ public class FirebaseHelper {
                     passMatch = pass.equals(model.getPass());
 
                     if (mobileMatch && passMatch) {
-                        signInCallBack.onSignIn(200, model.getId(),model.getYear());
+                        signInCallBack.onSignIn(200, model.getFaceId(),model.getYear());
                         return;
                     } else if (mobileMatch && !passMatch) {
                         signInCallBack.onSignIn(201, null,null);

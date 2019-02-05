@@ -8,17 +8,28 @@ import android.support.v7.app.AppCompatActivity;
 public class Splash extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+    protected void onStart() {
+        super.onStart();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(Splash.this, Login.class));
-                finish();
+                if (!AppGenericClass.getInstance(Splash.this).getPrefs(AppGenericClass.LOGGED_IN).equals("")) {
+                    startActivity(new Intent(Splash.this, Home.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(Splash.this, Login.class));
+                    finish();
+                }
             }
         }, 2000);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+
     }
 }

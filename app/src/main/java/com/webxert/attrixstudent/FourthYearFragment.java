@@ -19,22 +19,26 @@ import java.util.List;
 public class FourthYearFragment extends Fragment {
 
 
+    public static List<ClassModel> list = new ArrayList<>();
     List<ClassModel> classes = new ArrayList<>();
     RecyclerView recyclerView;
+    public static FourthYearFragment instance = null;
+
+    public static FourthYearFragment getInstance() {
+        if (instance == null)
+            instance = new FourthYearFragment();
+        return instance;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View itemView = inflater.inflate(R.layout.pager_item_layout,container,false);
+        View itemView = inflater.inflate(R.layout.pager_item_layout, container, false);
 
-        Bundle b = getArguments();
-
-        if(b.containsKey("list"))
-            this.classes = b.getParcelableArrayList("list");
 
         recyclerView = itemView.findViewById(R.id.rv_classes);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new ClassAdapter(getActivity(),this.classes));
+        recyclerView.setAdapter(new ClassAdapter(getActivity(), this.classes));
 
         return itemView;
     }

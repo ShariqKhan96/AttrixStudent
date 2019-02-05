@@ -19,18 +19,25 @@ import java.util.List;
 public class ThirdYearFragment extends Fragment {
 
 
+    public static List<ClassModel> list = new ArrayList<>();
     List<ClassModel> classes = new ArrayList<>();
     RecyclerView recyclerView;
+
+    public static ThirdYearFragment instance = null;
+
+    public static ThirdYearFragment getInstance() {
+        if (instance == null)
+            instance = new ThirdYearFragment();
+        return instance;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View itemView = inflater.inflate(R.layout.pager_item_layout,container,false);
 
-        Bundle b = getArguments();
 
-        if(b.containsKey("list"))
-            this.classes = b.getParcelableArrayList("list");
+
 
         recyclerView = itemView.findViewById(R.id.rv_classes);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

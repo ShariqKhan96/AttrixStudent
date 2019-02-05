@@ -33,7 +33,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
     Context context;
     List<ClassModel> cms = new ArrayList<>();
 
-    public ClassAdapter(Context context,List<ClassModel> cms) {
+    public ClassAdapter(Context context, List<ClassModel> cms) {
         this.context = context;
         this.cms = cms;
     }
@@ -48,7 +48,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
     public void onBindViewHolder(@NonNull final MyVH holder, int position) {
 
         holder.course_name.setText(cms.get(holder.getAdapterPosition()).getTitle());
-        if (cms.get(holder.getAdapterPosition()).isRegister()) {
+        if (cms.get(holder.getAdapterPosition()).getEnrolledStudents().contains(AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN))) {
             holder.lock.setVisibility(View.GONE);
             holder.show.setVisibility(View.VISIBLE);
         } else {
@@ -78,7 +78,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             show.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    context.startActivity(new Intent(context,StatsActivity.class));
+                    context.startActivity(new Intent(context, StatsActivity.class));
                 }
             });
 
@@ -97,7 +97,13 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                             if (editText.getText().toString().equals(cms.get(getAdapterPosition()).getClassCode())) {
                                 show.setVisibility(View.VISIBLE);
                                 lock.setVisibility(View.GONE);
-                                cms.get(getAdapterPosition()).setRegister(true);
+
+                                //locally
+
+                                cms.get(getAdapterPosition()).getEnrolledStudents().add(AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN));
+
+                                //firebase
+
                                 new FirebaseHelper(context).addStudentInClass(
                                         cms.get(getAdapterPosition()).getClassKey(),
                                         AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN),

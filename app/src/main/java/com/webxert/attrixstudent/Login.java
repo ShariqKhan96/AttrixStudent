@@ -14,22 +14,23 @@ import com.webxert.attrixstudent.common.FirebaseHelper;
 
 public class Login extends AppCompatActivity implements FirebaseHelper.SignInCallBack {
     private Button bt_login;
-    private EditText et_pass,et_mobileNo;
+    private EditText et_pass, et_mobileNo;
     private TextView register;
     private FirebaseHelper firebaseHelper;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         et_mobileNo = findViewById(R.id.et_mobileNo);
-        et_pass= findViewById(R.id.et_pass);
+        et_pass = findViewById(R.id.et_pass);
         register = findViewById(R.id.tv_createAccount);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Login.this,RegisterActivity.class));
+                startActivity(new Intent(Login.this, RegisterActivity.class));
             }
         });
 
@@ -39,19 +40,21 @@ public class Login extends AppCompatActivity implements FirebaseHelper.SignInCal
             public void onClick(View view) {
                 firebaseHelper = new FirebaseHelper(Login.this);
                 firebaseHelper.setSignInCallBack(Login.this);
-                firebaseHelper.signInStudent(et_mobileNo.getText().toString().trim(), et_pass.getText().toString().trim());            }
+                firebaseHelper.signInStudent(et_mobileNo.getText().toString().trim(), et_pass.getText().toString().trim());
+            }
         });
 
     }
 
     @Override
-    public void onSignIn(int code,String id,String class_id) {
+    public void onSignIn(int code, String id, String class_id) {
         if (code == 200) {
-            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.CLASS_ID,class_id);
-            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.TOKEN,id);
+
+            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.CLASS_ID, class_id);
+            AppGenericClass.getInstance(this).setPrefs(AppGenericClass.TOKEN, id);
             startActivity(new Intent(Login.this, Home.class));
-        }
-        else if (code == 201)
+
+        } else if (code == 201)
             Toast.makeText(Login.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(Login.this, "Mobile No or Password is incorrect", Toast.LENGTH_SHORT).show();

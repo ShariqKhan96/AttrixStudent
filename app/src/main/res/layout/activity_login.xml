@@ -48,20 +48,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pass" />
 
-    <TextView
+    <ImageView
+        android:layout_marginTop="10dp"
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="170dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="80dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="104dp"
-        android:text="Attrix"
+        android:layout_marginStart="8dp"
         android:textSize="40sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/et_mobileNo"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/slogan" />
 
     <TextView
         android:id="@+id/textView3"
@@ -96,13 +96,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@drawable/logo_transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_pass" />
+
 
 
 </android.support.constraint.ConstraintLayout>

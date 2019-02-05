@@ -19,8 +19,16 @@ import java.util.List;
 public class SecondYearFragment extends Fragment {
 
 
+    public static ArrayList<ClassModel> list= new ArrayList<>();
     List<ClassModel> classes = new ArrayList<>();
     RecyclerView recyclerView;
+    public static SecondYearFragment instance = null;
+
+    public static SecondYearFragment getInstance() {
+        if (instance == null)
+            instance = new SecondYearFragment();
+        return instance;
+    }
 
     @Nullable
     @Override
@@ -29,8 +37,6 @@ public class SecondYearFragment extends Fragment {
 
         Bundle b = getArguments();
 
-        if(b.containsKey("list"))
-            this.classes = b.getParcelableArrayList("list");
 
         recyclerView = itemView.findViewById(R.id.rv_classes);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

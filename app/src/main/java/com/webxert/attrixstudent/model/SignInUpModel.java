@@ -11,24 +11,24 @@ public class SignInUpModel {
     private String section;
     private String faceId;
     private String name;
-    private String imgExpDate;
     private String year;
-    private String id;
+    private String program;
 
-    public String getId() {
-        return id;
+
+    public SignInUpModel() {
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getImgExpDate() {
-        return imgExpDate;
-    }
-
-    public void setImgExpDate(String imgExpDate) {
-        this.imgExpDate = imgExpDate;
+    public SignInUpModel(String seatNo, String pass, String mobile, String batchNo, String shift, String section, String faceId, String name, String year, String program) {
+        this.seatNo = seatNo;
+        this.pass = pass;
+        this.mobile = mobile;
+        this.batchNo = batchNo;
+        this.shift = shift;
+        this.section = section;
+        this.faceId = faceId;
+        this.name = name;
+        this.year = year;
+        this.program = program;
     }
 
     public String getYear() {
@@ -39,16 +39,6 @@ public class SignInUpModel {
         this.year = year;
     }
 
-    private String email;
-    private List<String> imgUrls;
-
-    public List<String> getImgUrls() {
-        return imgUrls;
-    }
-
-    public void setImgUrls(List<String> imgUrls) {
-        this.imgUrls = imgUrls;
-    }
 
     public String getSeatNo() {
         return seatNo;
@@ -114,13 +104,6 @@ public class SignInUpModel {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getProgram() {
         return program;
@@ -130,6 +113,6 @@ public class SignInUpModel {
         this.program = program;
     }
 
-    private String program;
+
 
 }
