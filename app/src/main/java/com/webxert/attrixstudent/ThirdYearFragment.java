@@ -41,7 +41,7 @@ public class ThirdYearFragment extends Fragment {
 
         recyclerView = itemView.findViewById(R.id.rv_classes);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new ClassAdapter(getActivity(), this.classes));
+        recyclerView.setAdapter(new ClassAdapter(getActivity(), list));
 
         return itemView;
     }

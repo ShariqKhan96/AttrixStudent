@@ -41,6 +41,7 @@ public class Login extends AppCompatActivity implements FirebaseHelper.SignInCal
                 firebaseHelper = new FirebaseHelper(Login.this);
                 firebaseHelper.setSignInCallBack(Login.this);
                 firebaseHelper.signInStudent(et_mobileNo.getText().toString().trim(), et_pass.getText().toString().trim());
+                //finish();
             }
         });
 
@@ -53,6 +54,7 @@ public class Login extends AppCompatActivity implements FirebaseHelper.SignInCal
             AppGenericClass.getInstance(this).setPrefs(AppGenericClass.CLASS_ID, class_id);
             AppGenericClass.getInstance(this).setPrefs(AppGenericClass.TOKEN, id);
             startActivity(new Intent(Login.this, Home.class));
+            finish();
 
         } else if (code == 201)
             Toast.makeText(Login.this, "Incorrect Password", Toast.LENGTH_SHORT).show();

@@ -21,9 +21,8 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
 
     ViewPager viewPager;
     TabLayout tabLayout;
-    List<ClassModel> cms = new ArrayList<>();
+    List<ClassModel> cms;
     ImageView logout;
-
 
 
     @Override
@@ -33,10 +32,10 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
         logout = findViewById(R.id.logout);
 
         AppGenericClass.getInstance(this).setPrefs(AppGenericClass.LOGGED_IN, "true");
-
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearAllStaticLeaks();
                 //FirebaseAuth.getInstance().signOut();
                 AppGenericClass.getInstance(Home.this).clearPrefs();
                 Intent intent = new Intent(Home.this, Login.class);
@@ -57,9 +56,18 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
 
     }
 
+    private void clearAllStaticLeaks() {
+        FirstYearFragment.list.clear();
+        SecondYearFragment.list.clear();
+        ThirdYearFragment.list.clear();
+        FourthYearFragment.list.clear();
+    }
+
     @Override
     public void onSuccess(List<ClassModel> list) {
-        cms = list;
+        cms = new ArrayList<>();
+        cms.addAll(list);
+//        cms = list;
 //
 //        for (ClassModel cm : cms) {
 //            if (cm.getEnrolledStudents() != null) {

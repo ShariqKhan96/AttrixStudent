@@ -15,7 +15,9 @@ import com.webxert.attrixstudent.SecondYearFragment;
 import com.webxert.attrixstudent.ThirdYearFragment;
 import com.webxert.attrixstudent.model.ClassModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -66,7 +68,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private List<ClassModel> getFilteredClasses(String filter) {
         List<ClassModel> filteredClass = new ArrayList<>();
         for (ClassModel model : classes) {
-            if (model.getClassId().equals(filter)) {
+            if (model.getClassId().equals(filter + "-" + new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime()))) {
                 filteredClass.add(model);
             }
         }

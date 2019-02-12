@@ -97,9 +97,12 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                             if (editText.getText().toString().equals(cms.get(getAdapterPosition()).getClassCode())) {
                                 show.setVisibility(View.VISIBLE);
                                 lock.setVisibility(View.GONE);
+                               // notifyDataSetChanged();
 
                                 //locally
 
+                                if (cms.get(getAdapterPosition()).getEnrolledStudents().get(0).equals("-1"))
+                                    cms.get(getAdapterPosition()).getEnrolledStudents().clear();
                                 cms.get(getAdapterPosition()).getEnrolledStudents().add(AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN));
 
                                 //firebase

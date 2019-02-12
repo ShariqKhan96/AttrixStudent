@@ -25,6 +25,7 @@ import com.webxert.attrixstudent.model.SignInUpModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import dmax.dialog.SpotsDialog;
 
@@ -53,7 +54,7 @@ public class FirebaseHelper {
     }
 
     public interface SignInCallBack {
-        void onSignIn(int code, String id,String class_id);
+        void onSignIn(int code, String id, String class_id);
     }
 
     public interface RegisterCallBack {
@@ -187,10 +188,9 @@ public class FirebaseHelper {
                 if (!exists) {
                     String key = dbRef.child("Student").push().getKey();
                     dbRef.child("Student").child(key).setValue(signInUpModel);
-                    registerCallBack.onRegister(true, key);
+                    registerCallBack.onRegister(true, signInUpModel.getFaceId());
                 } else
                     registerCallBack.onRegister(false, null);
-
 
 
             }
@@ -210,7 +210,7 @@ public class FirebaseHelper {
         dialog.setMessage("Loading Classes. Please wait...");
         dialog.show();
 
-        dbRef.child("classes").addValueEventListener(new ValueEventListener() {
+        dbRef.child("Class").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -219,14 +219,13 @@ public class FirebaseHelper {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     ClassModel model = snapshot.getValue(ClassModel.class);
                     model.setClassKey(snapshot.getKey());
-
                     cms.add(model);
                 }
 
                 getClassCallback.onSuccess(cms);
                 try {
                     dialog.dismiss();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -240,15 +239,22 @@ public class FirebaseHelper {
     }
 
     public void addStudentInClass(String classKey, String studentKey, List<String> students) {
-        if (students != null)
-            students.add(studentKey);
-        else {
-            students = new ArrayList<>();
-            students.add(studentKey);
+//        if (students.get(0).equals("-1"))
+//        {
+//            students.clear();
+//            students = new ArrayList<>();
+//        }
+//        students.add(studentKey);
 
-        }
+//        if (students != null)
+//            students.add(studentKey);
+//        else {
+//            students = new ArrayList<>();
+//            students.add(studentKey);
 
-        dbRef.child("classes").child(classKey).child("enrolledStudents").setValue(students);
+        //}
+
+        dbRef.child("Class").child(classKey).child("enrolledStudents").setValue(students);
     }
 
     public void signInStudent(final String mobileNo, final String pass) {
@@ -271,15 +277,15 @@ public class FirebaseHelper {
                     passMatch = pass.equals(model.getPass());
 
                     if (mobileMatch && passMatch) {
-                        signInCallBack.onSignIn(200, model.getFaceId(),model.getYear());
+                        signInCallBack.onSignIn(200, model.getFaceId(), model.getYear());
                         return;
                     } else if (mobileMatch && !passMatch) {
-                        signInCallBack.onSignIn(201, null,null);
+                        signInCallBack.onSignIn(201, null, null);
                         return;
                     }
                 }
 
-                signInCallBack.onSignIn(202, null,null);
+                signInCallBack.onSignIn(202, null, null);
             }
 
             @Override

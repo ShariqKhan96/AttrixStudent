@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     int i;
     ProgressDialog dialog;
     ByteArrayInputStream byteArrayInputStream;
-    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "690152a3eb9a46879c53e5430cbb5ec7");
+    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "f4d0c60f29634336b2c4c6dd0357bebe");
     String seatNumber, studentName;
     public static String FaceID = "";
 
@@ -297,17 +297,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                         Log.e("ImageTrainingException", e.getMessage());
                     }
 
-                    //for loop to give 3 pictures
-//
-//                    Thread thread = new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                            }
-//
-//                        }
-//                    });
-//                    thread.start();
 
                     byteArrayOutputStream.close();
                     byteArrayInputStream.close();
