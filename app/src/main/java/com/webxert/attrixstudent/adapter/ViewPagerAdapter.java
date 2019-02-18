@@ -13,6 +13,7 @@ import com.webxert.attrixstudent.FirstYearFragment;
 import com.webxert.attrixstudent.FourthYearFragment;
 import com.webxert.attrixstudent.SecondYearFragment;
 import com.webxert.attrixstudent.ThirdYearFragment;
+import com.webxert.attrixstudent.interfaces.ClassSelectedListener;
 import com.webxert.attrixstudent.model.ClassModel;
 
 import java.text.SimpleDateFormat;
@@ -24,11 +25,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private Context context;
     private List<ClassModel> classes;
+    ClassSelectedListener classSelectedListener;
 
-    public ViewPagerAdapter(FragmentManager fm, Context context, List<ClassModel> classes) {
+    public ViewPagerAdapter(FragmentManager fm, Context context, List<ClassModel> classes, ClassSelectedListener classSelectedListener) {
         super(fm);
         this.context = context;
         this.classes = classes;
+        this.classSelectedListener = classSelectedListener;
     }
 
     @Nullable
@@ -87,15 +90,19 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 FirstYearFragment.list.addAll(getFilteredClasses("1"));
+                FirstYearFragment.classSelectedListener = classSelectedListener;
                 return FirstYearFragment.getInstance();
             case 1:
                 SecondYearFragment.list.addAll(getFilteredClasses("2"));
+                SecondYearFragment.classSelectedListener = classSelectedListener;
                 return SecondYearFragment.getInstance();
             case 2:
                 ThirdYearFragment.list.addAll(getFilteredClasses("3"));
+                ThirdYearFragment.classSelectedListener = classSelectedListener;
                 return ThirdYearFragment.getInstance();
             case 3:
                 FourthYearFragment.list.addAll(getFilteredClasses("4"));
+                FourthYearFragment.classSelectedListener = classSelectedListener;
                 return FourthYearFragment.getInstance();
 
         }

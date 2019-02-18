@@ -18,6 +18,7 @@ import com.webxert.attrixstudent.AppGenericClass;
 import com.webxert.attrixstudent.R;
 import com.webxert.attrixstudent.StatsActivity;
 import com.webxert.attrixstudent.common.FirebaseHelper;
+import com.webxert.attrixstudent.interfaces.ClassSelectedListener;
 import com.webxert.attrixstudent.model.ClassModel;
 
 import java.util.ArrayList;
@@ -32,10 +33,12 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
 
     Context context;
     List<ClassModel> cms = new ArrayList<>();
+    ClassSelectedListener classSelectedListener;
 
-    public ClassAdapter(Context context, List<ClassModel> cms) {
+    public ClassAdapter(Context context, List<ClassModel> cms, ClassSelectedListener classSelectedListener) {
         this.context = context;
         this.cms = cms;
+        this.classSelectedListener = classSelectedListener;
     }
 
     @NonNull
@@ -78,6 +81,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
             show.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    classSelectedListener.onClassSelected(cms.get(getAdapterPosition()));
                     context.startActivity(new Intent(context, StatsActivity.class));
                 }
             });
@@ -97,7 +101,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                             if (editText.getText().toString().equals(cms.get(getAdapterPosition()).getClassCode())) {
                                 show.setVisibility(View.VISIBLE);
                                 lock.setVisibility(View.GONE);
-                               // notifyDataSetChanged();
+                                // notifyDataSetChanged();
 
                                 //locally
 

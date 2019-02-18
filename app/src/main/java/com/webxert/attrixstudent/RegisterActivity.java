@@ -62,7 +62,6 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
 
         firebaseHelper = new FirebaseHelper(RegisterActivity.this);
 
-
         name = findViewById(R.id.name);
         mobile = findViewById(R.id.mobile);
         pass = findViewById(R.id.pass);

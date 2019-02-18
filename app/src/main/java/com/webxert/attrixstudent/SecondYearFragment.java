@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.webxert.attrixstudent.adapter.ClassAdapter;
+import com.webxert.attrixstudent.interfaces.ClassSelectedListener;
 import com.webxert.attrixstudent.model.ClassModel;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class SecondYearFragment extends Fragment {
 
 
     public static ArrayList<ClassModel> list= new ArrayList<>();
+    public static ClassSelectedListener classSelectedListener;
     List<ClassModel> classes = new ArrayList<>();
     RecyclerView recyclerView;
     public static SecondYearFragment instance = null;
@@ -40,7 +42,7 @@ public class SecondYearFragment extends Fragment {
 
         recyclerView = itemView.findViewById(R.id.rv_classes);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new ClassAdapter(getActivity(),list));
+        recyclerView.setAdapter(new ClassAdapter(getActivity(),list, classSelectedListener));
 
         return itemView;
     }
