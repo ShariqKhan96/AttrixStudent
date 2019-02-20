@@ -50,7 +50,14 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
     @Override
     public void onBindViewHolder(@NonNull final MyVH holder, int position) {
 
-        holder.course_name.setText(cms.get(holder.getAdapterPosition()).getTitle());
+        // holder.course_name.setText(cms.get(holder.getAdapterPosition()).getTitle());
+        ClassModel model = cms.get(position);
+
+        holder.Title.setText(model.getTitle());
+        holder.tv_courseNo.setText(model.getCourseNo());
+        holder.clteachername.setText(model.getYearOfTeaching() + " Year-" + model.getProgram() + "-" + model.getShift() + "-" + model.getSection());
+
+
         if (cms.get(holder.getAdapterPosition()).getEnrolledStudents().contains(AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN))) {
             holder.lock.setVisibility(View.GONE);
             holder.show.setVisibility(View.VISIBLE);
@@ -67,14 +74,16 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
     }
 
     public class MyVH extends RecyclerView.ViewHolder {
-        TextView course_name;
+        TextView Title, tv_courseNo, clteachername;
         ImageView lock;
         ImageView show;
 
 
         public MyVH(View itemView) {
             super(itemView);
-            course_name = itemView.findViewById(R.id.course_name);
+            Title = itemView.findViewById(R.id.cltitle);
+            tv_courseNo = itemView.findViewById(R.id.tv_courseNo);
+            clteachername = itemView.findViewById(R.id.clteachername);
             lock = itemView.findViewById(R.id.lock_unlock);
             show = itemView.findViewById(R.id.watch);
 
@@ -112,7 +121,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                                 //firebase
 
                                 new FirebaseHelper(context).addStudentInClass(
-                                        cms.get(getAdapterPosition()).getClassKey(),
+                                        cms.get(getAdapterPosition()).getClassId(),
                                         AppGenericClass.getInstance(context).getPrefs(AppGenericClass.TOKEN),
                                         cms.get(getAdapterPosition()).getEnrolledStudents());
                             } else {
