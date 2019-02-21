@@ -71,7 +71,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private List<ClassModel> getFilteredClasses(String filter) {
         List<ClassModel> filteredClass = new ArrayList<>();
         for (ClassModel model : classes) {
-            if (model.getClassId().equals(filter + "-" + new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime()))) {
+            if (model.getYearOfTeaching().equals(filter + "-" + new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime()))) {
                 filteredClass.add(model);
             }
         }

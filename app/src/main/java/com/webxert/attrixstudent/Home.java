@@ -47,7 +47,7 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         SignInUpModel student = data.getValue(SignInUpModel.class);
                         list.add(student);
-                        Log.e("hello", student.getSeatNo());
+                       // Log.e("hello", student.getSeatNo());
                     }
                     Paper.book().write("Students", list);
                     Common.setStudents(list);

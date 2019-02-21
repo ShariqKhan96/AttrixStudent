@@ -219,7 +219,8 @@ public class FirebaseHelper {
                 //get all classes
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     ClassModel model = snapshot.getValue(ClassModel.class);
-                    model.setClassId(snapshot.getKey());
+                    //model.setClassId(snapshot.getKey());
+                    Log.e("classid", snapshot.getKey());
                     cms.add(model);
                 }
 
