@@ -10,9 +10,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:nestedScrollingEnabled="false"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:layout_height="wrap_content">
+        android:nestedScrollingEnabled="false">
 
         <LinearLayout
             android:id="@+id/auth_view"
@@ -35,7 +35,6 @@
                 style="@style/darkroundedet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="Name" />
 
 
@@ -45,15 +44,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:inputType="phone"
                 android:text="0300" />
 
             <EditText
                 android:id="@+id/pass"
-
                 style="@style/darkroundedet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:inputType="textPassword"
                 android:text="Password" />
 
             <EditText
@@ -62,6 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:inputType="number"
                 android:text="15" />
 
             <EditText
@@ -78,7 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Morning" />
+                android:focusableInTouchMode="false"                android:hint="Morning"
+                android:textColorHint="@android:color/darker_gray" />
 
             <EditText
                 android:id="@+id/section"
@@ -86,7 +88,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="A" />
+                android:focusableInTouchMode="false"                android:hint="A"
+                android:textColorHint="@android:color/darker_gray" />
 
 
             <EditText
@@ -95,7 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="CS" />
+                android:focusableInTouchMode="false"                android:hint="CS"
+                android:textColorHint="@android:color/darker_gray" />
 
 
             <EditText
@@ -104,7 +108,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="1" />
+                android:focusableInTouchMode="false"
+                android:hint="1"
+                android:inputType="number"
+                android:textColorHint="@android:color/darker_gray" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/login_btn"

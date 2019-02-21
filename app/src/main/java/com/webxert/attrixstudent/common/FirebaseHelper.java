@@ -214,6 +214,7 @@ public class FirebaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                Log.e("ClassCount", dataSnapshot.getChildrenCount() + "");
                 List<ClassModel> cms = new ArrayList<>();
                 //get all classes
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

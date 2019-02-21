@@ -1,7 +1,9 @@
 package com.webxert.attrixstudent;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -50,6 +52,14 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "f4d0c60f29634336b2c4c6dd0357bebe");
     String seatNumber, studentName;
     public static String FaceID = "";
+    String shiftsOptions[] = {"Morning", "Evening"};
+    String programOptions[] = {"CS", "SE"};
+    String yearOptions[] = {"1", "2", "3", "4"};
+    String sectionOptions[] = {"A", "B"};
+    String selectedShift = "";
+    String selectedPgm = "";
+    String selectedYear = "";
+    String selectedSec = "";
 
 
     @Override
@@ -71,6 +81,75 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         program = findViewById(R.id.program);
         batchNo = findViewById(R.id.batch_no);
         year = findViewById(R.id.year);
+        shift.setClickable(true);
+        shift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(RegisterActivity.this);
+                mBuilder.setTitle("Choose Shift");
+                mBuilder.setSingleChoiceItems(shiftsOptions, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedShift = shiftsOptions[i];
+                        shift.setText(selectedShift);
+                  dialogInterface.dismiss();;
+                    }
+                });
+                mBuilder.show();
+            }
+        });
+        year.setClickable(true);
+        year.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(RegisterActivity.this);
+                mBuilder.setTitle("Choose Year");
+                mBuilder.setSingleChoiceItems(yearOptions, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedYear = yearOptions[i];
+                        year.setText(selectedYear);
+                        dialogInterface.dismiss();
+                    }
+                });
+            mBuilder.show();
+            }
+        });
+        program.setClickable(true);
+        program.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(RegisterActivity.this);
+                mBuilder.setTitle("Choose Program");
+                mBuilder.setSingleChoiceItems(programOptions, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedPgm = programOptions[i];
+                        program.setText(selectedPgm);
+                    dialogInterface.dismiss();
+                    }
+                });
+                mBuilder.show();
+            }
+        });
+        section.setClickable(true);
+        section.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(RegisterActivity.this);
+                mBuilder.setTitle("Choose Section");
+                mBuilder.setSingleChoiceItems(sectionOptions, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedSec = sectionOptions[i];
+                        section.setText(selectedSec);
+                    dialogInterface.dismiss();
+                    }
+                });
+                mBuilder.show();
+            }
+        });
+
 
         image_picker_view = findViewById(R.id.image_picker_view);
         auth_view = findViewById(R.id.auth_view);
@@ -90,13 +169,26 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         findViewById(R.id.login_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUserFace();
+                if (validateFields()) {
+                    registerUserFace();
 
-                seatNumber = seatNo.getText().toString();
-                studentName = name.getText().toString();
+                    seatNumber = seatNo.getText().toString();
+                    studentName = name.getText().toString();
+
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Some Fileds Are Empty", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
+    }
+
+    private boolean validateFields() {
+        if (selectedPgm.equals("") || selectedSec.equals("") || selectedShift.equals("") || selectedYear.equals("")
+                || name.getText().toString().isEmpty() || mobile.getText().toString().isEmpty() || pass.getText().toString().isEmpty() ||
+                batchNo.getText().toString().isEmpty() || seatNo.getText().toString().isEmpty())
+            return false;
+        else return true;
     }
 
     @Override

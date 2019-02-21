@@ -13,9 +13,7 @@ import android.widget.Toast;
 import com.webxert.attrixstudent.common.FirebaseHelper;
 
 public class Login extends AppCompatActivity implements FirebaseHelper.SignInCallBack {
-    private Button bt_login;
     private EditText et_pass, et_mobileNo;
-    private TextView register;
     private FirebaseHelper firebaseHelper;
 
     @Override
@@ -25,7 +23,7 @@ public class Login extends AppCompatActivity implements FirebaseHelper.SignInCal
 
         et_mobileNo = findViewById(R.id.et_mobileNo);
         et_pass = findViewById(R.id.et_pass);
-        register = findViewById(R.id.tv_createAccount);
+        TextView register = findViewById(R.id.tv_createAccount);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,13 +32,17 @@ public class Login extends AppCompatActivity implements FirebaseHelper.SignInCal
             }
         });
 
-        bt_login = findViewById(R.id.bt_login);
+        Button bt_login = findViewById(R.id.bt_login);
         bt_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseHelper = new FirebaseHelper(Login.this);
-                firebaseHelper.setSignInCallBack(Login.this);
-                firebaseHelper.signInStudent(et_mobileNo.getText().toString().trim(), et_pass.getText().toString().trim());
+                if (!et_mobileNo.getText().toString().isEmpty() && !et_pass.getText().toString().isEmpty()) {
+                    firebaseHelper = new FirebaseHelper(Login.this);
+                    firebaseHelper.setSignInCallBack(Login.this);
+                    firebaseHelper.signInStudent(et_mobileNo.getText().toString().trim(), et_pass.getText().toString().trim());
+                } else
+                    Toast.makeText(Login.this, "Some Fields are empty!", Toast.LENGTH_SHORT).show();
+
                 //finish();
             }
         });

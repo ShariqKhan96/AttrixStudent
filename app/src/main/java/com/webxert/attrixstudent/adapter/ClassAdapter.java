@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.webxert.attrixstudent.AppGenericClass;
 import com.webxert.attrixstudent.R;
@@ -127,6 +128,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyVH> {
                             } else {
                                 show.setVisibility(View.GONE);
                                 lock.setVisibility(View.VISIBLE);
+                                Toast.makeText(context, "Entered secret key is wrong!", Toast.LENGTH_SHORT).show();
                             }
                             notifyDataSetChanged();
                             dialog.dismiss();
