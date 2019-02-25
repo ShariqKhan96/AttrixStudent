@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +28,7 @@ public class StatsActivity extends AppCompatActivity {
     int totalCount = 0;
     int presentCount = 0;
     int absentCount = 0;
+    public String faceId = "";
 
     ProgressDialog dialog;
 
@@ -40,6 +42,7 @@ public class StatsActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
         dialog.setMessage("Loading Statistics");
         dialog.setTitle("Please Wait");
+        faceId = AppGenericClass.getInstance(this).getPrefs(AppGenericClass.TOKEN);
         getInformation();
     }
 
@@ -76,15 +79,20 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void presentOrAbsent(List<Attendance> attendanceList) {
-        int comparable = presentCount;
         for (Attendance attendance : attendanceList) {
-            if (Common.isStudentExist(attendance.face_id)) {
-                presentCount = presentCount + 1;
-                break;
+            Log.e("Faceid", attendance.face_id + " " + Common.findStudent(attendance.face_id).getName());
+            if (attendance.getFace_id().equals(faceId)) {
+                if (attendance.is_present) {
+                    presentCount = presentCount + 1;
+                    break;
+                } else {
+                    absentCount = absentCount + 1;
+                }
             }
+
         }
-        if (comparable == presentCount) {
-            absentCount = absentCount + 1;
-        }
+//        if (comparable == presentCount) {
+//            absentCount = absentCount + 1;
+//        }
     }
 }

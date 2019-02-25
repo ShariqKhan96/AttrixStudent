@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     int i;
     ProgressDialog dialog;
     ByteArrayInputStream byteArrayInputStream;
-    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "f4d0c60f29634336b2c4c6dd0357bebe");
+    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "8944efc23c1246dab94545b72ebe1ba4");
     String seatNumber, studentName;
     public static String FaceID = "";
     String shiftsOptions[] = {"Morning", "Evening"};
@@ -69,9 +69,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
         dialog = new ProgressDialog(this);
         dialog.setTitle("Registering");
         dialog.setMessage("Please Wait..");
-
         firebaseHelper = new FirebaseHelper(RegisterActivity.this);
-
         name = findViewById(R.id.name);
         mobile = findViewById(R.id.mobile);
         pass = findViewById(R.id.pass);
