@@ -29,7 +29,6 @@ public class StatsActivity extends AppCompatActivity {
     int presentCount = 0;
     int absentCount = 0;
     public String faceId = "";
-
     ProgressDialog dialog;
 
     @Override

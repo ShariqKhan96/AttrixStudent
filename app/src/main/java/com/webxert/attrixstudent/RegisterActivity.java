@@ -23,6 +23,7 @@ import com.microsoft.projectoxford.face.contract.AddPersistedFaceResult;
 import com.microsoft.projectoxford.face.contract.CreatePersonResult;
 import com.microsoft.projectoxford.face.contract.PersonGroup;
 import com.microsoft.projectoxford.face.contract.TrainingStatus;
+import com.microsoft.projectoxford.face.rest.ClientException;
 import com.webxert.attrixstudent.common.FirebaseHelper;
 import com.webxert.attrixstudent.model.SignInUpModel;
 
@@ -49,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
     int i;
     ProgressDialog dialog;
     ByteArrayInputStream byteArrayInputStream;
-    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "8944efc23c1246dab94545b72ebe1ba4");
+    private FaceServiceRestClient faceServiceRestClient = new FaceServiceRestClient("https://westcentralus.api.cognitive.microsoft.com/face/v1.0", "ed27c09cdaf94afabbbbda6492099350");
     String seatNumber, studentName;
     public static String FaceID = "";
     String shiftsOptions[] = {"Morning", "Evening"};
@@ -90,7 +91,8 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                     public void onClick(DialogInterface dialogInterface, int i) {
                         selectedShift = shiftsOptions[i];
                         shift.setText(selectedShift);
-                  dialogInterface.dismiss();;
+                        dialogInterface.dismiss();
+                        ;
                     }
                 });
                 mBuilder.show();
@@ -110,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                         dialogInterface.dismiss();
                     }
                 });
-            mBuilder.show();
+                mBuilder.show();
             }
         });
         program.setClickable(true);
@@ -124,7 +126,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                     public void onClick(DialogInterface dialogInterface, int i) {
                         selectedPgm = programOptions[i];
                         program.setText(selectedPgm);
-                    dialogInterface.dismiss();
+                        dialogInterface.dismiss();
                     }
                 });
                 mBuilder.show();
@@ -141,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                     public void onClick(DialogInterface dialogInterface, int i) {
                         selectedSec = sectionOptions[i];
                         section.setText(selectedSec);
-                    dialogInterface.dismiss();
+                        dialogInterface.dismiss();
                     }
                 });
                 mBuilder.show();
@@ -298,6 +300,7 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                         seatNumber + " " + studentName, null);
 
             } catch (Exception e) {
+//                return faceServiceRestClient.updatePerson();
                 e.printStackTrace();
                 dialog.dismiss();
                 return null;
@@ -492,12 +495,25 @@ public class RegisterActivity extends AppCompatActivity implements FirebaseHelpe
                 //updating old group. If you want to create a new group change to createPerson Group....
                 UNIQUE_ID = year.getText().toString() + "-" + AppGenericClass.getInstance(RegisterActivity.this).getCurrentYear();
                 faceServiceRestClient.createPersonGroup(UNIQUE_ID, "UBIT Students", null);
-            } catch (Exception e) {
+            } catch (ClientException e) {
+
+                try {
+                    faceServiceRestClient.updatePersonGroup(UNIQUE_ID, "UBIT Students", null);
+                    Log.e("CatchException", "Updating");
+                } catch (Exception e1) {
+                    Log.e("CatchException", e1.getMessage());
+
+                }
+
+
                 Log.e("Client/IO Exception", e.getMessage());
                 publishProgress("Exception caught");
+
                 e.printStackTrace();
                 dialog.dismiss();
                 return false;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
 
