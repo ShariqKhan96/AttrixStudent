@@ -32,7 +32,7 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
     ViewPager viewPager;
     TabLayout tabLayout;
     List<ClassModel> cms;
-    ImageView logout;
+    ImageView logout,info;
     List<SignInUpModel> list;
     public static ClassModel SELECTED_CLASS = null;
 
@@ -40,18 +40,16 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
         list = new ArrayList<>();
         Paper.book().delete("Students");
         list.clear();
-        FirebaseDatabase.getInstance().getReference("Student").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Student").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() > 0) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         SignInUpModel student = data.getValue(SignInUpModel.class);
                         list.add(student);
-                       // Log.e("hello", student.getSeatNo());
                     }
                     Paper.book().write("Students", list);
                     Common.setStudents(list);
-                    //Common.CURRENT_STUDENT = Common.findStudent(AppGenericClass.getInstance(Home.this).getPrefs(AppGenericClass.TOKEN));
 
                 }
 
@@ -69,7 +67,16 @@ public class Home extends AppCompatActivity implements FirebaseHelper.GetClassCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_new);
         logout = findViewById(R.id.logout);
+        info = findViewById(R.id.info);
 
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StudentDailog sd = new StudentDailog(Home.this);
+//                sd.getWindow().setLayout(600,400);
+                sd.show();
+            }
+        });
 
         getStudents();
         AppGenericClass.getInstance(this).setPrefs(AppGenericClass.LOGGED_IN, "true");

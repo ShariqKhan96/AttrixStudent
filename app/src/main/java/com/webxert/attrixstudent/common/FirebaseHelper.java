@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.logging.Handler;
 
 import dmax.dialog.SpotsDialog;
+import io.paperdb.Paper;
 
 public class FirebaseHelper {
 
@@ -187,6 +188,7 @@ public class FirebaseHelper {
 
                 if (!exists) {
                     String key = dbRef.child("Student").push().getKey();
+                    Paper.book().write("User",signInUpModel);
                     dbRef.child("Student").child(key).setValue(signInUpModel);
                     registerCallBack.onRegister(true, signInUpModel.getFaceId());
                 } else
@@ -210,7 +212,7 @@ public class FirebaseHelper {
         dialog.setMessage("Loading Classes. Please wait...");
         dialog.show();
 
-        dbRef.child("Class").addValueEventListener(new ValueEventListener() {
+        dbRef.child("Class").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -279,6 +281,7 @@ public class FirebaseHelper {
                     passMatch = pass.equals(model.getPass());
 
                     if (mobileMatch && passMatch) {
+                        Paper.book().write("User",model);
                         signInCallBack.onSignIn(200, model.getFaceId(), model.getYear());
                         return;
                     } else if (mobileMatch && !passMatch) {

@@ -24,10 +24,12 @@ public class StatsActivity extends AppCompatActivity {
     TextView tv_total;
     TextView tv_present;
     TextView tv_absent;
+    TextView tv_attedancePercentage;
 
     int totalCount = 0;
     int presentCount = 0;
     int absentCount = 0;
+    double attendancePercentage = 0;
     public String faceId = "";
     ProgressDialog dialog;
 
@@ -37,6 +39,7 @@ public class StatsActivity extends AppCompatActivity {
         setContentView(R.layout.stats_activity);
         tv_absent = findViewById(R.id.absent_classes);
         tv_present = findViewById(R.id.present_classes);
+        tv_attedancePercentage = findViewById(R.id.tv_attedancePercentage);
         tv_total = findViewById(R.id.total_classes);
         dialog = new ProgressDialog(this);
         dialog.setMessage("Loading Statistics");
@@ -46,14 +49,14 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void getInformation() {
-        totalCount = 0;
-        presentCount = 0;
-        absentCount = 0;
         dialog.show();
-        FirebaseDatabase.getInstance().getReference("Attendance").child(Home.SELECTED_CLASS.getCourseNo()).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Attendance").child(Home.SELECTED_CLASS.getClassId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 dialog.dismiss();
+                totalCount = 0;
+                presentCount = 0;
+                absentCount = 0;
                 totalCount = (int) dataSnapshot.getChildrenCount();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     AttendanceModel attendanceModel = data.getValue(AttendanceModel.class);
@@ -66,6 +69,10 @@ public class StatsActivity extends AppCompatActivity {
                         tv_total.setText(String.valueOf(totalCount));
                         tv_absent.setText(String.valueOf(absentCount));
                         tv_present.setText(String.valueOf(presentCount));
+
+                        attendancePercentage  = ((float)presentCount/(float) totalCount) * 100;
+                        attendancePercentage= (int) attendancePercentage;
+                        tv_attedancePercentage.setText(attendancePercentage + "%");
                     }
                 });
             }
@@ -90,8 +97,5 @@ public class StatsActivity extends AppCompatActivity {
             }
 
         }
-//        if (comparable == presentCount) {
-//            absentCount = absentCount + 1;
-//        }
     }
 }
